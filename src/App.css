@@ -1,0 +1,8 @@
+body {
+  margin: 0;
+}
+.tableRow {
+  border: 1px solid gray;
+  padding: 6px;
+  text-align: center;
+}
