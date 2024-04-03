@@ -1,3 +1,5 @@
+require("dotenv").config();
+const Note = require("./models/note");
 const express = require("express");
 const app = express();
 
@@ -7,34 +9,16 @@ app.use(cors());
 app.use(express.static("dist"));
 app.use(express.json());
 
-let notes = [
-  {
-    id: 1,
-    content: "HTML is easy",
-    important: true,
-  },
-  {
-    id: 2,
-    content: "Browser can execute only JavaScript",
-    important: false,
-  },
-  {
-    id: 3,
-    content: "GET and POST are the most important methods of HTTP protocol",
-    important: true,
-  },
-];
-
-const url = "/api/notes/";
-
 app.get("/", (req, res) => {
   res.send("<h1>Hello Niggers!</h1>");
 });
-app.get(url, (req, res) => {
-  res.json(notes);
+app.get("/api/notes", (req, res) => {
+  Note.find({}).then((notes) => {
+    res.json(notes);
+  });
 });
 
-app.get(url + ":id", (req, res) => {
+app.get("/api/notes/:id", (req, res) => {
   const id = Number(req.params.id);
   const note = notes.find((n) => n.id === id);
   if (note) {
@@ -45,7 +29,7 @@ app.get(url + ":id", (req, res) => {
   }
 });
 
-app.delete(url + ":id", (req, res) => {
+app.delete("/api/notes/:id", (req, res) => {
   const id = Number(req.params.id);
   notes = notes.filter((note) => note.id !== id);
   res.status(204).end();
@@ -56,7 +40,7 @@ const generateID = () => {
   return maxId + 1;
 };
 
-app.post(url, (req, res) => {
+app.post("/api/notes", (req, res) => {
   const body = req.body;
 
   if (!body.content) {
@@ -76,7 +60,7 @@ app.post(url, (req, res) => {
   res.json(note);
 });
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT;
 app.listen(port, () => {
   console.log(`listening to app by express on port ${port}`);
 });
