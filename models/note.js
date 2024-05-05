@@ -12,29 +12,19 @@ mongoose
     console.log("Connected to MongoDB");
   })
   .catch((e) => {
-    console.log(e.message);
+    console.log(`Error Connecting to MongoDb ${e.message}`);
   });
 
-const personSchema = new mongoose.Schema({
-  name: {
+const noteSchema = new mongoose.Schema({
+  content: {
     type: String,
-    minLength: 3,
+    minLength: 5,
     required: true,
   },
-  number: {
-    type: String,
-    validate: {
-      validator: function (v) {
-        return /^\d{2,3}-\d+$/.test(v);
-      },
-      message: (props) =>
-        `${props.value} is not a valid phone number! Valid number looks like (XX,XXX)-X(Many of these)`,
-    },
-    required: true,
-  },
+  important: Boolean,
 });
 
-personSchema.set("toJSON", {
+noteSchema.set("toJSON", {
   transform: (doc, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
@@ -42,4 +32,4 @@ personSchema.set("toJSON", {
   },
 });
 
-module.exports = mongoose.model("Person", personSchema);
+module.exports = mongoose.model("Note", noteSchema);
